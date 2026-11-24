@@ -34,7 +34,7 @@ CREATE TABLE `accounts` (
   CONSTRAINT `chk_account_type` CHECK ((`account_type` in (_utf8mb4'Savings',_utf8mb4'Current'))),
   CONSTRAINT `chk_balance` CHECK ((`balance` >= 0)),
   CONSTRAINT `chk_status` CHECK ((`status` in (_utf8mb4'ACTIVE',_utf8mb4'FROZEN',_utf8mb4'CLOSED')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,6 +43,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+INSERT INTO `accounts` VALUES (1,1,'Savings',4500.00,'ACTIVE'),(2,2,'Current',10000.00,'ACTIVE'),(3,3,'Savings',4500.00,'ACTIVE'),(4,4,'Current',22000.00,'ACTIVE'),(5,5,'Savings',7000.00,'ACTIVE');
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +62,7 @@ CREATE TABLE `audit_logs` (
   `record_id` int DEFAULT NULL,
   `action_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,6 +71,7 @@ CREATE TABLE `audit_logs` (
 
 LOCK TABLES `audit_logs` WRITE;
 /*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
+INSERT INTO `audit_logs` VALUES (1,'root@localhost','INSERT','transactions',1,'2026-11-24 15:48:16'),(2,'root@localhost','INSERT','transactions',2,'2026-11-24 15:48:16'),(3,'root@localhost','INSERT','transactions',3,'2026-11-24 15:48:16'),(4,'root@localhost','INSERT','transactions',4,'2026-11-24 15:48:16'),(5,'root@localhost','INSERT','transactions',5,'2026-11-24 15:48:16'),(6,'root@localhost','INSERT','transactions',6,'2026-11-24 15:48:16'),(7,'root@localhost','INSERT','transactions',7,'2026-11-24 15:48:16'),(8,'root@localhost','INSERT','transactions',8,'2026-11-24 15:48:16'),(9,'root@localhost','INSERT','transactions',9,'2026-11-24 15:48:16'),(10,'root@localhost','INSERT','transactions',10,'2026-11-24 15:48:16');
 /*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +93,7 @@ CREATE TABLE `customers` (
   PRIMARY KEY (`customer_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `national_id` (`national_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,6 +102,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
+INSERT INTO `customers` VALUES (1,'John','Banda','johnbanda@email.com','+260967788948','789011/24/1','2026-11-24 15:48:16'),(2,'Mary','Phiri','maryphiri@email.com','+260971674589','346712/29/1','2026-11-24 15:48:16'),(3,'Brian','Tembo','briantembo@email.com','+260954906754','345690/23/1','2026-11-24 15:48:16'),(4,'Grace','Mwansa','gracemwansa@email.com','+260578452345','265783/45/1','2026-11-24 15:48:16'),(5,'Peter','Zulu','peterzulu@email.com','+260960137469','107449/29/1','2026-11-24 15:48:16');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +125,7 @@ CREATE TABLE `transactions` (
   CONSTRAINT `fk_transactions_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_amount` CHECK ((`amount` > 0)),
   CONSTRAINT `chk_txn_type` CHECK ((`transaction_type` in (_utf8mb4'DEPOSIT',_utf8mb4'WITHDRAWAL',_utf8mb4'TRANSFER')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,6 +134,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
+INSERT INTO `transactions` VALUES (1,1,'DEPOSIT',5000.00,'2026-11-24 15:48:16','teller'),(2,2,'DEPOSIT',12000.00,'2026-11-24 15:48:16','teller'),(3,3,'DEPOSIT',3000.00,'2026-11-24 15:48:16','teller'),(4,4,'DEPOSIT',25000.00,'2026-11-24 15:48:16','teller'),(5,5,'DEPOSIT',8000.00,'2026-11-24 15:48:16','teller'),(6,1,'WITHDRAWAL',500.00,'2026-11-24 15:48:16','teller'),(7,2,'WITHDRAWAL',2000.00,'2026-11-24 15:48:16','teller'),(8,3,'DEPOSIT',1500.00,'2026-11-24 15:48:16','teller'),(9,4,'TRANSFER',3000.00,'2026-11-24 15:48:16','teller'),(10,5,'WITHDRAWAL',1000.00,'2026-11-24 15:48:16','teller');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-11-24 17:19:14
+-- Dump completed on 2026-11-24 17:58:58
