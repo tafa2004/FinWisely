@@ -1,0 +1,21 @@
+# Maven
+target/
+
+# Java
+*.class
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Local configuration and secrets
+.env
+*.properties.local
+
+# OS files
+.DS_Store
+Thumbs.db
