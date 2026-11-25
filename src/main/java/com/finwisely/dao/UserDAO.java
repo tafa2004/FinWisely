@@ -13,9 +13,11 @@ public class UserDAO {
             Connection connection, String username)
             throws SQLException {
 
-        String sql = "SELECT user_id, username, password_hash, " +
-                     "role, status FROM app_users " +
-                     "WHERE username = ?";
+        String sql = """
+                SELECT user_id, username, password_hash, role, status
+                FROM app_users
+                WHERE username = ?
+                """;
 
         try (PreparedStatement statement =
                      connection.prepareStatement(sql)) {

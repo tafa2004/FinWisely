@@ -9,14 +9,17 @@ public class AuthenticationLoginTest {
 
         AuthenticationService auth = new AuthenticationService();
 
-        // Test with a username that does not exist
-        User user = auth.login("unknown_user", "DemoPass@123");
+        // Test SQL injection prevention
+        String maliciousUsername = "' OR '1'='1' --";
+
+        User user = auth.login(maliciousUsername, "anything");
 
         if (user != null) {
             System.out.println("LOGIN SUCCESSFUL!");
+            System.out.println("SQL INJECTION TEST FAILED!");
         } else {
             System.out.println("LOGIN FAILED!");
-            System.out.println("User does not exist or credentials are invalid.");
+            System.out.println("SQL INJECTION ATTEMPT REJECTED!");
         }
     }
 }
