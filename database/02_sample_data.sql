@@ -1,8 +1,18 @@
+-- ============================================================
+-- FINWISELY: FICTIONAL DEMONSTRATION DATA
+-- For academic testing only. No real customer or banking data.
+-- Run after 01_create_tables.sql.
+-- INSERT IGNORE prevents duplicate demo records on reruns.
+-- ============================================================
+
 USE finwisely;
 
 START TRANSACTION;
 
--- Sample customers
+-- ------------------------------------------------------------
+-- 1. FICTIONAL CUSTOMERS
+-- ------------------------------------------------------------
+
 INSERT IGNORE INTO customers
 (customer_id, first_name, last_name, email, phone, national_id)
 VALUES
@@ -12,34 +22,52 @@ VALUES
 (1004, 'Grace', 'Moyo', 'grace.moyo@example.test', '+260970000004', 'DEMO-ID-1004'),
 (1005, 'David', 'Tembo', 'david.tembo@example.test', '+260970000005', 'DEMO-ID-1005');
 
--- Sample accounts
+
+-- ------------------------------------------------------------
+-- 2. FICTIONAL BANK ACCOUNTS
+-- Balances represent the result of the transactions below.
+-- ------------------------------------------------------------
+
 INSERT IGNORE INTO accounts
 (account_id, customer_id, account_type, balance, status)
 VALUES
-(2001, 1001, 'Savings', 4500.00, 'ACTIVE'),
+(2001, 1001, 'Savings',  4500.00, 'ACTIVE'),
 (2002, 1002, 'Current', 10000.00, 'ACTIVE'),
-(2003, 1003, 'Savings', 4500.00, 'ACTIVE'),
+(2003, 1003, 'Savings',  4500.00, 'ACTIVE'),
 (2004, 1004, 'Current', 22000.00, 'ACTIVE'),
-(2005, 1005, 'Savings', 7000.00, 'ACTIVE');
+(2005, 1005, 'Savings',  7000.00, 'ACTIVE');
 
--- Sample transactions
+
+-- ------------------------------------------------------------
+-- 3. FICTIONAL TRANSACTION HISTORY
+-- The audit trigger automatically records each new transaction.
+-- ------------------------------------------------------------
+
 INSERT IGNORE INTO transactions
 (transaction_id, account_id, transaction_type, amount, performed_by)
 VALUES
-(3001, 2001, 'DEPOSIT', 5000.00, 'demo_teller'),
-(3002, 2001, 'WITHDRAWAL', 500.00, 'demo_teller'),
-(3003, 2002, 'DEPOSIT', 12000.00, 'demo_teller'),
+(3001, 2001, 'DEPOSIT',    5000.00, 'demo_teller'),
+(3002, 2001, 'WITHDRAWAL',  500.00, 'demo_teller'),
+
+(3003, 2002, 'DEPOSIT',   12000.00, 'demo_teller'),
 (3004, 2002, 'WITHDRAWAL', 2000.00, 'demo_teller'),
-(3005, 2003, 'DEPOSIT', 3000.00, 'demo_teller'),
-(3006, 2003, 'DEPOSIT', 1500.00, 'demo_teller'),
-(3007, 2004, 'DEPOSIT', 25000.00, 'demo_teller'),
+
+(3005, 2003, 'DEPOSIT',    3000.00, 'demo_teller'),
+(3006, 2003, 'DEPOSIT',    1500.00, 'demo_teller'),
+
+(3007, 2004, 'DEPOSIT',   25000.00, 'demo_teller'),
 (3008, 2004, 'WITHDRAWAL', 3000.00, 'demo_teller'),
-(3009, 2005, 'DEPOSIT', 8000.00, 'demo_teller'),
+
+(3009, 2005, 'DEPOSIT',    8000.00, 'demo_teller'),
 (3010, 2005, 'WITHDRAWAL', 1000.00, 'demo_teller');
 
 COMMIT;
 
--- Customer account summary
+
+-- ------------------------------------------------------------
+-- 4. VERIFICATION QUERIES
+-- ------------------------------------------------------------
+
 SELECT
     c.customer_id,
     CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
@@ -52,7 +80,7 @@ JOIN accounts a ON c.customer_id = a.customer_id
 WHERE c.customer_id BETWEEN 1001 AND 1005
 ORDER BY a.account_id;
 
--- Transaction history
+
 SELECT
     transaction_id,
     account_id,
@@ -64,7 +92,7 @@ FROM transactions
 WHERE transaction_id BETWEEN 3001 AND 3010
 ORDER BY transaction_id;
 
--- Audit records
+
 SELECT
     log_id,
     username,
@@ -79,7 +107,13 @@ FROM audit_logs
 WHERE record_id BETWEEN 3001 AND 3010
 ORDER BY log_id;
 
--- Check account balances against transaction history
+
+-- ------------------------------------------------------------
+-- 5. BALANCE RECONCILIATION
+-- Compares stored account balances with transaction totals.
+-- A zero difference indicates consistency for this demo data.
+-- ------------------------------------------------------------
+
 SELECT
     a.account_id,
     a.balance AS stored_balance,
