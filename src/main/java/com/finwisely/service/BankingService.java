@@ -21,7 +21,8 @@ public class BankingService {
                         BigDecimal amount,
                         String performedBy) throws SQLException {
 
-        validateDeposit(amount);
+        validateAmount(amount);
+        validatePerformedBy(performedBy);
 
         processTransaction(
                 connection, accountId, amount, performedBy, "DEPOSIT"
@@ -34,21 +35,32 @@ public class BankingService {
                          BigDecimal amount,
                          String performedBy) throws SQLException {
 
-        validateDeposit(amount);
+        validateAmount(amount);
+        validatePerformedBy(performedBy);
 
         processTransaction(
                 connection, accountId, amount, performedBy, "WITHDRAWAL"
         );
     }
 
-    // Validate the transaction amount
-    private void validateDeposit(BigDecimal amount) {
+    // Validate transaction amount
+    private void validateAmount(BigDecimal amount) {
 
         if (amount == null ||
             amount.compareTo(BigDecimal.ZERO) <= 0) {
 
             throw new IllegalArgumentException(
                     "Amount must be greater than zero."
+            );
+        }
+    }
+
+    // Validate the user performing the transaction
+    private void validatePerformedBy(String performedBy) {
+
+        if (performedBy == null || performedBy.isBlank()) {
+            throw new IllegalArgumentException(
+                    "The transaction username is required."
             );
         }
     }
@@ -115,12 +127,17 @@ public class BankingService {
                     connection, transaction
             );
 
-            // Save both database changes together
+            // Commit both changes together
             connection.commit();
 
         } catch (SQLException | RuntimeException e) {
 
-            connection.rollback();
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackError) {
+                e.addSuppressed(rollbackError);
+            }
+
             throw e;
 
         } finally {
